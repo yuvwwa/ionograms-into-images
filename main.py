@@ -26,41 +26,60 @@ def show_ionogram(ionogram, ion_arr, save_dir="data_result", alpha_labels=1, for
     norm = Normalize(vmin=1, vmax=np.max(ion_arr))
     im = ax.imshow(ion_arr, origin='lower', cmap=cmap, norm=norm, aspect='auto', extent=[0, 1, 0, 1])
 
-    # Оси 
-    # Доработать, их не видно
+    # Оси
     num_y_ticks = 20
     num_x_ticks = 10
-    d_tick_pos = np.linspace(0, 1, num_y_ticks)
-    f_tick_pos = np.linspace(0, 1, num_x_ticks)
+    d_tick_pos = np.linspace(0, 1, num_y_ticks)[1:-1] # [1:-1] - Убираем крайние значения
+    f_tick_pos = np.linspace(0, 1, num_x_ticks)[1:-1]
     
     d_vals = np.linspace(
         min(ionogram.data, key=lambda x: x.dist).dist,
         max(ionogram.data, key=lambda x: x.dist).dist,
         num_y_ticks
-    )
+    )[1:-1]
     d_labels = [f'{v/300:.2f}' for v in d_vals]
 
     f_vals = np.linspace(
         ionogram.passport.start_freq,
         ionogram.passport.end_freq,
         num_x_ticks
-    )
-    f_labels = [f'{v/100:.1f}' for v in f_vals]
+    )[1:-1]
+    f_labels = [f'{v/1000:.1f}' for v in f_vals]
 
-    ax.set_yticks(d_tick_pos)
-    ax.set_yticklabels(d_labels, fontsize=10, color='black', alpha=alpha_labels)
+    # Отключаем тики
+    ax.set_xticks([])
+    ax.set_yticks([])
 
-    ax.set_xticks(f_tick_pos)
-    ax.set_xticklabels(f_labels, fontsize=10, color='black', rotation=45, alpha=alpha_labels)
+    # Рисуем сетку вручную поверх данных
+    for pos in f_tick_pos:
+        ax.axvline(x=pos, ymin=0, ymax=1, color='black', linestyle='--', linewidth=0.8, alpha=0.5)
+    
+    for pos in d_tick_pos:
+        ax.axhline(y=pos, xmin=0, xmax=1, color='black', linestyle='--', linewidth=0.8, alpha=0.5)
+    
+    # Рисуем тики и подписи вручную поверх данных
+    for i, (pos, label) in enumerate(zip(f_tick_pos, f_labels)):
+        # Вертикальные линии
+        ax.axvline(x=pos, ymin=0, ymax=0.01, color='black', alpha=alpha_labels, linewidth=1)
+        # Подписи
+        ax.text(pos, 0.02, label, transform=ax.transData, fontsize=8, 
+                color='black', alpha=alpha_labels, ha='center', va='bottom', rotation=45)
+    
+    for i, (pos, label) in enumerate(zip(d_tick_pos, d_labels)):
+        # Горизонтальные линии
+        ax.axhline(y=pos, xmin=0, xmax=0.01, color='black', alpha=alpha_labels, linewidth=1)
+        # Подписи
+        ax.text(0.02, pos, label, transform=ax.transData, fontsize=8,
+                color='black', alpha=alpha_labels, ha='left', va='center')
 
     # Сетка
     ax.grid(True, which='major', color='black', linestyle='--', linewidth=0.8, alpha=0.5)
 
     # Подписи осей
-    ax.text(0.5, 0.03, 'Частота, МГц', transform=ax.transAxes,
+    ax.text(0.5, 0.07, 'Частота, МГц', transform=ax.transAxes,
             fontsize=13, color='black', ha='center', va='top', alpha=alpha_labels)
 
-    ax.text(0.03, 0.5, 'Задержка, мс', transform=ax.transAxes,
+    ax.text(0.07, 0.5, 'Задержка, мс', transform=ax.transAxes,
             fontsize=13, color='black', ha='right', va='center', rotation=90, alpha=alpha_labels)
 
     # Заголовок
