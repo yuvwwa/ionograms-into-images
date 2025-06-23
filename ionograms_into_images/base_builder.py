@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-import src.ionread_python as ionread
+import ionread_python as ionread
 import numpy as np
 
 class BaseIonogramArrayBuilder(ABC):
