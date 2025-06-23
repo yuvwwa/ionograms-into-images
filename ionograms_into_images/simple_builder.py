@@ -1,6 +1,6 @@
 import numpy as np
-import src.ionread_python as ionread
-from base_builder import BaseIonogramArrayBuilder
+import ionread_python as ionread
+from ionograms_into_images.base_builder import BaseIonogramArrayBuilder
 
 class SimpleIonogramArrayBuilder(BaseIonogramArrayBuilder):
     def __init__(self, ionogram: ionread.Ionogram) -> None:
