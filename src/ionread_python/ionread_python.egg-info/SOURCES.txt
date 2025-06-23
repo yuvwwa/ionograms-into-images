@@ -1,0 +1,11 @@
+setup.py
+./__init__.py
+./ionogram.py
+./ionread_python.py
+./passport_constants.py
+./test_run.py
+./unit_test.py
+ionread_python.egg-info/PKG-INFO
+ionread_python.egg-info/SOURCES.txt
+ionread_python.egg-info/dependency_links.txt
+ionread_python.egg-info/top_level.txt
