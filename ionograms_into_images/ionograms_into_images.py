@@ -91,22 +91,20 @@ class ShowIonogram:
         ax.text(0.5, 0.97, title, transform=ax.transAxes,
                 fontsize=title_font_size, color='black', ha='center', va='top', alpha=alpha_labels)
 
-        # Цветовая шкала
-        if show_colorbar:
+        # Цветовая шкала          
+        if show_colorbar and alpha_labels > 0:
             cax = inset_axes(ax, width="3%", height="50%", loc='upper right',
                              bbox_to_anchor=(0, 0, 0.95, 0.95), bbox_transform=ax.transAxes)
             cbar = fig.colorbar(im, cax=cax)
 
-            # Устанавливаем прозрачность чисел
             cbar.ax.tick_params(labelsize=colorbar_num_font_size, colors='black')
             for tick in cbar.ax.get_yticklabels():
                 tick.set_alpha(alpha_labels)
 
-            # Устанавливаем прозрачность самой шкалы
             cbar.solids.set_alpha(alpha_labels)
 
             cax.patch.set_facecolor('black')
-            cax.patch.set_alpha(0.1)
+            cax.patch.set_alpha(alpha_labels)
 
         # Ограничения осей
         ax.set_xlim(0, 1)
