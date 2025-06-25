@@ -20,10 +20,6 @@
 # Запуск одной командой
 
 python script.py test_data/03_02_05_08_00.dat --alpha_labels 0.5 --show_grid yes --show_colorbar yes --title_font_size 20 --axis_num_font_size 12 --axis_label_font_size 15 --colorbar_num_font_size 12
-
-python script.py test_data/01_02_07_20_00.dat --alpha_labels 1 --show_grid no --show_colorbar yes --title_font_size 25 --axis_num_font_size 14 --axis_label_font_size 10 --colorbar_num_font_size 14
-
-python script.py test_data/01_02_07_20_00.dat --alpha_labels 0 --show_grid yes --show_colorbar no --title_font_size 15 --axis_num_font_size 8 --axis_label_font_size 12 --colorbar_num_font_size 8
 ```
 
 где:
