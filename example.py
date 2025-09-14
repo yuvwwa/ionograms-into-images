@@ -184,7 +184,7 @@ def show_ionogram(ionogram: Union[ionread.Ionogram, None], ion_arr, path: str = 
 
     plt.show()
 
-ionogram = ionread.read_ionogram('test_data/2021/01MCP20150626/01_01_00_30_00.dat')
+ionogram = ionread.read_ionogram('test_data/2021/05MCP20150626/05_01_01_10_00.dat')
 # Выводим паспорт (метаданные) ионограммы
 ionogram.passport
 
