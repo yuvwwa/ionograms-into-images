@@ -18,7 +18,14 @@ class ShowIonogram:
         cmap = cm.get_cmap('jet').copy()
         cmap.set_under('white')
 
-        fig = plt.figure(figsize=(10, 8))
+        # Настройка автоматического размера изображения, в зависимости от данных
+        h, w = ion_arr.shape
+        aspect = h/w
+        
+        width = 8
+        height = width * aspect
+        
+        fig = plt.figure(figsize=(width, height))
         ax = fig.add_axes([0, 0, 1, 1])  # График занимает 100% площади
 
         norm = Normalize(vmin=1, vmax=np.max(ion_arr))
@@ -110,7 +117,7 @@ class ShowIonogram:
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1)
 
-        plt.savefig(save_path, bbox_inches=None, pad_inches=0, format=format, facecolor='black')
+        plt.savefig(save_path, bbox_inches='tight', pad_inches=0, format=format, facecolor='black')
         plt.close(fig)
 
         print(f"Путь: {save_path}")
