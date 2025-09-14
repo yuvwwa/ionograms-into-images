@@ -6,6 +6,7 @@ from ionograms_into_images.simple_builder import SimpleIonogramArrayBuilder
 def main():
     parser = argparse.ArgumentParser(description="Визуализация ионограммы из .dat файла.")
     parser.add_argument("file_path", type=str, help="Путь к входному .dat файлу")
+    parser.add_argument("--save_dir", type=str, default="data_result", help="Директория для сохранения результатов")
     parser.add_argument("--alpha_labels", type=float, default=1.0, help="Прозрачность подписей (0.0 - 1.0)")
     parser.add_argument("--show_grid", type=str, default='yes', help="Отображение сетки (yes/no)")
     parser.add_argument("--show_colorbar", type=str, default='yes', help="Отображение цветовой шкалы (yes/no)")
@@ -34,6 +35,7 @@ def main():
         ShowIonogram.show_ionogram(
             ionogram = ionogram,
             ion_arr = ionogram_array,
+            save_dir = args.save_dir,
             alpha_labels = args.alpha_labels,
             show_grid = args.show_grid,
             show_colorbar = args.show_colorbar,

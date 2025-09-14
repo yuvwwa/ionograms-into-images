@@ -2,35 +2,52 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
 import ionread_python as ionread
-from ionograms_into_images.simple_builder import SimpleIonogramArrayBuilder
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from ionograms_into_images.simple_builder import SimpleIonogramArrayBuilder
 
+
+'''
 img_path = "data_result/02.01.2014_07:20:00 UT.jpg"
 dat_path = "test_data/01_02_07_20_00.dat"
+'''
+
+
+img_path = "data_result/02.03.2016_05:08:00 UT.jpg"
+dat_path = "test_data/03_02_05_08_00.dat"
+
 
 def validation (img_path, dat_path):
     # Изображение
     img = mpimg.imread(img_path)
     img_height, img_width = img.shape[:2]
+    print(img_height, img_width)
 
     # Ионограмма
     ionogram = ionread.read_ionogram(dat_path)
     ionogram_array_builder = SimpleIonogramArrayBuilder(ionogram=ionogram).process()
     ionogram_array = ionogram_array_builder.get_ndarray()
+    print(ionogram_array[:5, :5])
     array_height, array_width = ionogram_array.shape
+    print(array_height, array_width)
 
     # Координаты
-    x1, y1 = 200, 300
-    x2, y2 = 550, 650
+    # <box label="label_3" source="Ground truth" occluded="0" xtl="283.25" ytl="125.75" xbr="478.37" ybr="360.98" z_order="0">
+    # <box label="label_1" source="Ground truth" occluded="0" xtl="109.81" ytl="381.57" xbr="444.77" ybr="548.51" z_order="0">
+    x1, y1 = 109.81, 381.57
+    x2, y2 = 444.77, 548.51
 
     # Перевод координат изображения в координаты массива
     ix1 = int((x1 / img_width) * array_width)
+    print(int(x1/img_width))
     ix2 = int((x2 / img_width) * array_width)
     iy1 = array_height - int((y2 / img_height) * array_height)
     iy2 = array_height - int((y1 / img_height) * array_height)
 
     # Вырезка фрагментов
-    img_crop = img[y1:y2, x1:x2]
+    img_crop = img[int(round(y1)):int(round(y2)), int(round(x1)):int(round(x2))]
+
     ion_crop = ionogram_array[iy1:iy2, ix1:ix2]
 
     fig, axs = plt.subplots(2, 2, figsize=(12, 10))
