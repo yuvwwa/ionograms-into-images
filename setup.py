@@ -1,25 +1,17 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="ionograms_into_images",
-    version="1.0.0",
+    name="ionimage",
+    version="0.0.1",
+    author="Yulia Kravtsova",
     packages=find_packages(),
     install_requires=[
+        'ionarray>=0.0.18',
+        'ionread_python>=0.0.16',
         'numpy>=2.3.1',
-        'matplotlib>=3.10.3',
-        'ionread_python'
-    ],
-    author="Yulia Kravtsova",
-    author_email="yuvwwa@gmail.com",
-    description="Library for ionogram visualization and processing",
-    url="https://github.com/yuvwwa/ionograms-into-images.git",
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
+        'matplotlib>=3.10.3'
     ],
     package_dir={
         'ionograms_into_images': '.',
     },
-    python_requires='>=3.7',
 )

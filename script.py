@@ -1,7 +1,7 @@
 import argparse
-from ionograms_into_images.ionograms_into_images import ShowIonogram
+from ionograms_into_images import MakeImageFromDatFile
 import ionread_python as ionread
-from ionograms_into_images.simple_builder import SimpleIonogramArrayBuilder
+from ionarray.builders import *
 
 def main():
     parser = argparse.ArgumentParser(description="Визуализация ионограммы из .dat файла.")
@@ -28,11 +28,23 @@ def main():
 
     try:
         ionogram = ionread.read_ionogram(args.file_path)
+  
+        boundes = IonogramBounds(
+            min_freq=1000, max_freq=15000, min_dist=0, max_dist=2000)
 
-        ionogram_array_builder = SimpleIonogramArrayBuilder(ionogram=ionogram).process()
-        ionogram_array = ionogram_array_builder.get_ndarray()
+        # Получаем массив из ионограммы
+        boundedBuilder = BoundedIonogramArrayBuilder(boundes, ionogram).process()
+        ionogram_array = boundedBuilder.get_ndarray()
 
-        ShowIonogram.show_ionogram(
+        print(ionogram_array.shape)
+
+        # Меняем размерность массива
+        from ionarray.ionresize import resize_ionogram
+
+        ionogram_array = resize_ionogram(ionogram_array, (512, 512))
+        print(ionogram_array.shape)
+
+        MakeImageFromDatFile.make_image(
             ionogram = ionogram,
             ion_arr = ionogram_array,
             save_dir = args.save_dir,

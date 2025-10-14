@@ -1,37 +1,33 @@
-from ionograms_into_images.ionograms_into_images import ShowIonogram
-import ionread_python as ionread_python
-from ionograms_into_images.simple_builder import SimpleIonogramArrayBuilder
+from ionograms_into_images import MakeImageFromDatFile
+import ionread_python as ionread
+from ionarray.builders import *
 
+ionogram = ionread.read_ionogram('test_data/03_02_05_08_00.dat')
 
-alpha_labels = float(input("Прозрачность подписей (0-1): ").strip())
-grid_input = input("Отображать сетку? (Yes/No): ").strip().lower()
-show_grid = grid_input == "yes"
+boundes = IonogramBounds(
+    min_freq=1000, max_freq=15000, min_dist=0, max_dist=2000)
 
-cbar_input = input("Отображать цветовую шкалу? (Yes/No): ").strip().lower()
-show_colorbar = cbar_input == "yes"
+# Получаем массив из ионограммы
+boundedBuilder = BoundedIonogramArrayBuilder(boundes, ionogram).process()
+ionogram_array = boundedBuilder.get_ndarray()
 
-title_font_size = int(input("Размер шрифта заголовка: ").strip())
-axis_num_font_size = int(input("Размер шрифта чисел на осях: ").strip())
-axis_label_font_size = int(input("Размер шрифта подписей осей: ").strip())
-colorbar_num_font_size = int(input("Размер чисел на цветовой шкале: ").strip())
+print(ionogram_array.shape)
 
-# 01_02_07_20_00
-# 03_02_05_08_00
-ionogram = ionread_python.read_ionogram('test_data/03_02_05_08_00.dat')
-print(ionogram.passport)
+# Меняем размерность массива
+from ionarray.ionresize import resize_ionogram
 
-ionogram_array_builder = SimpleIonogramArrayBuilder(ionogram=ionogram).process()
-ionogram_array = ionogram_array_builder.get_ndarray()
+ionogram_array = resize_ionogram(ionogram_array, (512, 512))
+print(ionogram_array.shape)
 
-ShowIonogram.show_ionogram(
+MakeImageFromDatFile.make_image(
     ionogram=ionogram,
     ion_arr=ionogram_array,
-    alpha_labels=alpha_labels,
-    show_grid=show_grid,
-    show_colorbar=show_colorbar,
-    title_font_size=title_font_size,
-    axis_num_font_size=axis_num_font_size,
-    axis_label_font_size=axis_label_font_size,
-    colorbar_num_font_size=colorbar_num_font_size,
-    format='jpg'
+    alpha_labels=0,
+    show_grid='no',
+    show_colorbar='no',
+    title_font_size=14,
+    axis_num_font_size=8,
+    axis_label_font_size=10,
+    colorbar_num_font_size=10,
+    format='png'
 )
