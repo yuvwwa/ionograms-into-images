@@ -2,6 +2,7 @@ import argparse
 from ionograms_into_images import MakeImageFromDatFile
 import ionread_python as ionread
 from ionarray.builders import *
+from ionarray import resize_ionogram
 
 def main():
     parser = argparse.ArgumentParser(description="Визуализация ионограммы из .dat файла.")
@@ -36,13 +37,11 @@ def main():
         boundedBuilder = BoundedIonogramArrayBuilder(boundes, ionogram).process()
         ionogram_array = boundedBuilder.get_ndarray()
 
-        print(ionogram_array.shape)
+        print(f"Размер до конвертации: {ionogram_array.shape}")
 
         # Меняем размерность массива
-        from ionarray.ionresize import resize_ionogram
-
         ionogram_array = resize_ionogram(ionogram_array, (512, 512))
-        print(ionogram_array.shape)
+        print(f"Размер после конвертации: {ionogram_array.shape}")
 
         MakeImageFromDatFile.make_image(
             ionogram = ionogram,
@@ -54,7 +53,8 @@ def main():
             title_font_size = args.title_font_size,
             axis_num_font_size = args.axis_num_font_size,
             axis_label_font_size = args.axis_label_font_size,
-            colorbar_num_font_size = args.colorbar_num_font_size
+            colorbar_num_font_size = args.colorbar_num_font_size,
+            bounds=boundes
         )
 
     except Exception as e:
@@ -66,6 +66,6 @@ if __name__ == "__main__":
 
 
 # Пример запуска программы
-# python script.py test_data/03_02_05_08_00.dat --alpha_labels 0.5 --show_grid yes --show_colorbar yes --title_font_size 20 --axis_num_font_size 12 --axis_label_font_size 15 --colorbar_num_font_size 12
-# python script.py test_data/01_02_07_20_00.dat --alpha_labels 1 --show_grid yes --show_colorbar yes --title_font_size 20 --axis_num_font_size 12 --axis_label_font_size 15 --colorbar_num_font_size 12
-# python script.py test_data/01_02_07_20_00.dat --alpha_labels 0 --show_grid yes --show_colorbar yes --title_font_size 20 --axis_num_font_size 12 --axis_label_font_size 15 --colorbar_num_font_size 12
+# python __main__.py test_data/03_02_05_08_00.dat --alpha_labels 0.5 --show_grid yes --show_colorbar yes --title_font_size 20 --axis_num_font_size 12 --axis_label_font_size 15 --colorbar_num_font_size 12
+# python __main__.py test_data/01_01_06_48_00.dat --alpha_labels 1 --show_grid yes --show_colorbar yes --title_font_size 20 --axis_num_font_size 12 --axis_label_font_size 15 --colorbar_num_font_size 12
+# python __main__.py test_data/01_02_07_20_00.dat --alpha_labels 0 --show_grid yes --show_colorbar yes --title_font_size 20 --axis_num_font_size 12 --axis_label_font_size 15 --colorbar_num_font_size 12

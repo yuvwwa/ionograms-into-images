@@ -4,14 +4,18 @@ import numpy as np
 from matplotlib.colors import Normalize
 from matplotlib import cm
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from ionread_python.ionogram import Ionogram
+from ionarray.builders.bounded_ionogram_builder import IonogramBounds
+from typing import Union
 
 class MakeImageFromDatFile:
-    def make_image(ionogram, ion_arr, save_dir="data_result", alpha_labels=1, format="png",
+    @staticmethod
+    def make_image(ionogram: Ionogram, ion_arr: np.ndarray, bounds: Union[IonogramBounds, None] = None, save_dir="data_result", alpha_labels=1, format="png",
                     show_grid=True, show_colorbar=True, title_font_size=20, axis_num_font_size=10, 
                     axis_label_font_size=14, colorbar_num_font_size=10):
         os.makedirs(save_dir, exist_ok=True)
 
-        fname = f"{ionogram.passport.session_date}_{ionogram.passport.session_time}.{format}"
+        fname = f"{ionogram.passport.transmitter}_{ionogram.passport.receiver}_{ionogram.passport.session_date}_{ionogram.passport.session_time}.{format}"
         save_path = os.path.join(save_dir, fname)
 
         # Белый фон
@@ -34,22 +38,27 @@ class MakeImageFromDatFile:
         # Оси
         num_y_ticks = 20
         num_x_ticks = 10
-        d_tick_pos = np.linspace(0, 1, num_y_ticks)[1:-1] # [1:-1] - Убираем крайние значения
+        d_tick_pos = np.linspace(0, 1, num_y_ticks)[1:-1]  # [1:-1] - убираем крайние значения
         f_tick_pos = np.linspace(0, 1, num_x_ticks)[1:-1]
-        
-        d_vals = np.linspace(
-            min(ionogram.data, key=lambda x: x.dist).dist,
-            max(ionogram.data, key=lambda x: x.dist).dist,
-            num_y_ticks
-        )[1:-1]
-        d_labels = [f'{v/300:.2f}' for v in d_vals]
 
-        f_vals = np.linspace(
-            ionogram.passport.start_freq,
-            ionogram.passport.end_freq,
-            num_x_ticks
-        )[1:-1]
-        f_labels = [f'{v/1000:.1f}' for v in f_vals]
+        # Если используются ограничения, то d_vals и f_vals должны вычисляться на основе ограничений (IonogramBounds), а не паспорта. 
+        # Если же не передаются, то тогда на основе паспорта ионограммы.
+        if bounds is not None:
+            min_height = bounds.min_dist
+            max_height = bounds.max_dist
+            min_freq = bounds.min_freq
+            max_freq = bounds.max_freq
+        else:
+            min_height = min(ionogram.data, key=lambda x: x.dist).dist
+            max_height = max(ionogram.data, key=lambda x: x.dist).dist
+            min_freq = ionogram.passport.start_freq
+            max_freq = ionogram.passport.end_freq
+
+        d_vals = np.linspace(min_height, max_height, num_y_ticks)[1:-1]
+        d_labels = [f'{v / 300:.2f}' for v in d_vals]
+
+        f_vals = np.linspace(min_freq, max_freq, num_x_ticks)[1:-1]
+        f_labels = [f'{v / 1000:.1f}' for v in f_vals]
 
         # Отключаем тики
         ax.set_xticks([])

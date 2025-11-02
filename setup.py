@@ -8,8 +8,8 @@ setup(
     install_requires=[
         'ionarray>=0.0.18',
         'ionread_python>=0.0.16',
-        'numpy>=2.3.1',
-        'matplotlib>=3.10.3'
+        'numpy>=1.26.4',
+        'matplotlib>=3.4.1'
     ],
     package_dir={
         'ionimage': '.',
